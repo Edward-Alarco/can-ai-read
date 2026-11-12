@@ -11,12 +11,12 @@ A minimal website checker that inspects a public URL for observable access barri
 - Separate robots.txt rules for search and training agents from OpenAI, Anthropic and Google.
 - Prioritized expandable findings: plain-language explanations, source evidence, HTML line numbers, correction guidance, code examples, verification steps and official documentation.
 - Action filters, a copyable action plan, reading view and JSON export.
-- Optional, explicitly requested mobile screenshot from Google PageSpeed Insights; service availability and quota apply.
+- Automatic desktop screenshot of the analyzed public page, without performance metrics.
 - Clearly labeled sample report. No database or AI API keys required.
 
 ## Development
 
-Use **Node.js 22.12+ within the 22.x LTS release line**.
+Use **Node.js 22.17+ within the 22.x LTS release line**.
 
 ```sh
 npm ci
@@ -35,7 +35,7 @@ On Windows, the project can live at `C:\Users\edwar\Desktop\Projects\can-ai-read
 
 ## Vercel
 
-Import this repository in Vercel and select Astro. Use Node.js 22.x, install with `npm ci`, and build with `npm run build`. The included `@astrojs/vercel` adapter provides the Node runtime required by `/api/analyze`. No environment variables are required for the HTML diagnostic. `PAGESPEED_API_KEY` is optional for the user-triggered Google screenshot preview; set it only server-side.
+Import this repository in Vercel and select Astro. Use Node.js 22.x, install with `npm ci`, and build with `npm run build`. The included `@astrojs/vercel` adapter provides the Node runtime required by `/api/analyze`. No environment variables are required for the HTML diagnostic.
 
 Deployment has not been performed. Before allowing public traffic, configure hosting/WAF rate limits and abuse controls. This MVP does not implement distributed request quotas; Origin checks do not replace rate limiting.
 
@@ -80,10 +80,3 @@ Evidence snippets come from the received HTML and include parser-provided line n
 
 No overall AI-understanding or citation probability score is generated. Metrics include HTML bytes, analysis duration, heading/image counts, words and links; analysis duration is not a page-speed benchmark.
 
-## Optional real screenshot
-
-Open Visual preview and click Request preview from Google. The interface explains that the URL will be shared with Google. The server requires `consent: true`, revalidates the public target with the existing pinned-DNS client, then asks the fixed Google PageSpeed API endpoint for a mobile Lighthouse run. If Google includes a supported final-screenshot raster, it is displayed with its source and final URL. No screenshot is fabricated, and the preview is separate from the HTML diagnostic. Demo URLs cannot trigger a request.
-
-PageSpeed can be queried without a key, but quotas may prevent delivery. For repeated usage, set `PAGESPEED_API_KEY` in your server environment after enabling the PageSpeed Insights API. Never use a PUBLIC_ variable for this key. A response may omit a usable screenshot. There is no guaranteed full-page capture, browser-agent simulation or performance score. The preview fails independently of the report and is not stored in a database. Google may process the submitted public URL according to its service policies.
-
-The Vercel adapter permits up to 60 seconds (subject to your plan). Core diagnostic and preview endpoints still need deployment-level rate limiting/abuse controls before public launch. Screenshot requests can be expensive and use provider quota; the MVP has no durable distributed rate limiter. No headless browser or new database is required for this preview integration.

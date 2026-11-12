@@ -15,8 +15,6 @@ export const translations: Record<string, string> = {
   "Sin registro": "No sign-up",
   "Sin claves de API": "No API keys",
   "Una URL por análisis": "One URL per check",
-  "¿Solo estás explorando?": "Just exploring?",
-  "Ver un informe de ejemplo": "View a sample report",
   "REGLAS DE RASTREO PARA": "CRAWLER RULES FOR",
   "ANÁLISIS EN CURSO": "ANALYSIS IN PROGRESS",
   "Siguiendo las señales de tu web": "Following your website’s signals",
@@ -80,7 +78,8 @@ export const translations: Record<string, string> = {
   "SIN RESULTADOS": "NO RESULTS",
   "No se han encontrado resultados": "No results found",
   "Can AI Read — Haz tu web más accesible para la IA": "Can AI Read — Make your website easier for AI to access",
-  "Comprueba el acceso, las reglas de rastreo y el contenido extraíble de tu web. Evidencias claras y acciones concretas, sin registro.": "Check your website’s access, crawler rules and extractable content. Clear evidence and actionable findings, no sign-up.",
+  "Comprueba si la IA puede leer tu web pública: acceso, reglas de rastreo y texto extraíble del HTML. Evidencias claras y el siguiente paso, sin registro.": "Check whether AI can read your public website: access, crawler rules and HTML text we can extract. Clear evidence and a concrete next step, with no sign-up.",
+  "inteligencia artificial, rastreo web, robots.txt, contenido extraíble, SEO técnico, accesibilidad para IA": "artificial intelligence, web crawling, robots.txt, extractable content, technical SEO, AI accessibility",
   "EJEMPLO · DATOS FICTICIOS": "SAMPLE · FICTIONAL DATA",
   "ACCESIBLE CON LIMITACIONES": "ACCESSIBLE WITH LIMITATIONS",
   "HTML ACCESIBLE Y EXTRAÍBLE": "HTML ACCESSIBLE AND EXTRACTABLE",
@@ -159,7 +158,19 @@ export const translations: Record<string, string> = {
   "Allow: / (ejemplo)": "Allow: / (example)",
   "Disallow: / (ejemplo)": "Disallow: / (example)",
   "Una URL · HTML inicial · sin ejecutar JavaScript · datos de demostración": "One URL · initial HTML · no JavaScript execution · demo data",
-  "Estudio Norte — Diseño para marcas que avanzan": "Estudio Norte — Design for brands moving forward"
+  "Estudio Norte — Diseño para marcas que avanzan": "Estudio Norte — Design for brands moving forward",
+  "Lupa": "Magnifying glass",
+  "Marca de verificación": "Check mark",
+  "Detective": "Detective",
+  "Estado del análisis": "Analysis status",
+  "Compartir": "Share",
+  "Señales": "Signals",
+  "Recibo": "Receipt",
+  "Fuera de alcance": "Out of scope",
+  "Expandir": "Expand",
+  "Cerrar": "Close",
+  "Enlace externo": "External link",
+  "Flecha hacia arriba": "Up arrow"
 };
 
 export function resolveLocale(acceptLanguage: string | null | undefined, preference?: string): Locale {

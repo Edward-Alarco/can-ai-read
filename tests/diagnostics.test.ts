@@ -2,8 +2,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {analyze} from '../src/lib/analyze';
 import type {safeFetch} from '../src/lib/safe-fetch';
-import {extractVisualPreview} from '../src/lib/visual-preview';
 import {createDemoReport} from '../src/lib/demo-report';
+import {POST as screenshot} from '../src/pages/api/screenshot';
 const healthy=`<!doctype html>
 <html><head>
 <title>Pet supplies in Lima</title>
@@ -76,21 +76,16 @@ test('malformed schema carries its source evidence and becomes actionable',async
 test('demo makes its fictional nature explicit and statistics match the actual demo excerpt',()=>{
  for(const locale of ['en','es']as const){const report=createDemoReport(locale);assert.match(report.scope,/fictional|ficticias/);assert.equal(report.words,report.excerpt.split(/\s+/).length);assert.ok(report.findings.length>=10);}
 });
-test('visual preview accepts only supported raster data and a real HTTP final URL',()=>{
- const result={lighthouseResult:{finalUrl:'https://github.com/',fetchTime:'2026-11-12T12:00:00Z',audits:{'final-screenshot':{details:{data:'data:image/jpeg;base64,AA=='}}}}};
- assert.equal(extractVisualPreview(result)?.strategy,'mobile');
- const bad=structuredClone(result);bad.lighthouseResult.audits['final-screenshot'].details.data='data:image/svg+xml;base64,AA==';assert.equal(extractVisualPreview(bad),null);
- bad.lighthouseResult.audits['final-screenshot'].details.data='https://untrusted.example/image.jpg';assert.equal(extractVisualPreview(bad),null);
- assert.equal(extractVisualPreview({}),null);
- result.lighthouseResult.finalUrl='javascript:alert(1)';assert.equal(extractVisualPreview(result),null);
+function screenshotRequest(body: unknown, origin = 'https://can-ai-read.example') {
+ return {request:new Request(`${origin}/api/screenshot`,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify(body)})} as Parameters<typeof screenshot>[0];
+}
+test('desktop screenshot rejects private destinations before launching a browser',async()=>{
+ const response=await screenshot(screenshotRequest({url:'http://127.0.0.1'}));
+ assert.equal(response.status,422);
 });
-import {POST} from '../src/pages/api/preview';
-function previewRequest(body:unknown){return {request:new Request('https://can-ai-read.example/api/preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),cookies:{get:()=>undefined}}as unknown as Parameters<typeof POST>[0];}
-test('Google preview is not requested without affirmative consent',async()=>{
- const response=await POST(previewRequest({url:'https://github.com'}));
- assert.equal(response.status,400);assert.match((await response.json()).error,/Confirm sharing/);
-});
-test('Google preview rejects private URLs before any service request',async()=>{
- const response=await POST(previewRequest({url:'http://127.0.0.1',consent:true,language:'es'}));
- assert.equal(response.status,422);assert.equal(response.headers.get('Content-Language'),'es');
+test('desktop screenshot rejects cross-origin requests',async()=>{
+ const context=screenshotRequest({url:'https://github.com'});
+ context.request=new Request('https://can-ai-read.example/api/screenshot',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://untrusted.example'},body:'{"url":"https://github.com"}'});
+ const response=await screenshot(context);
+ assert.equal(response.status,403);
 });
