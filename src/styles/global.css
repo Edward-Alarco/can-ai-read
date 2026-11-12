@@ -51,8 +51,8 @@ h3{font-weight:500}
 .compatibility>div{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:15px}
 .compatibility img{display:block;width:auto;pointer-events:none;object-fit:contain}
 .logo-openai{height:23px}
-.logo-anthropic{height:27px}
-.logo-google{height:26px}
+.logo-anthropic{height:23px}
+.logo-google{height:27px}
 .section-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:32px}
 .section-heading p{color:var(--muted);font-size:13px;margin:0}
 .how-section{padding:55px 0 70px;border-top:1px solid var(--border)}
