@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { copy } from '../lib/diagnostics';
 import { resolveLocale, translator } from '../lib/i18n';
 const locale = resolveLocale(Astro.request.headers.get('accept-language'), Astro.cookies.get('language')?.value);
 const t = translator(locale);
+const s = (en: string, es: string) => copy(locale, en, es);
 Astro.response.headers.set('Content-Language', locale);
 Astro.response.headers.set('Vary', 'Accept-Language, Cookie');
 Astro.response.headers.set('Cache-Control', 'private, no-store');
@@ -36,8 +38,20 @@ Astro.response.headers.set('Cache-Control', 'private, no-store');
     <section id="report" class="wrap report-section" hidden tabindex="-1" aria-labelledby="report-heading">
       <div class="report-top"><div><span id="report-mode" class="eyebrow">{t("DIAGNÓSTICO DE PÁGINA")}</span><h2 id="report-heading">{t("Tu informe, sin cajas negras.")}</h2></div><button id="download-button" type="button" class="secondary-button">{t("Descargar JSON ↓")}</button></div>
       <div class="report-summary"><div><span class="status-row"><img class="status-icon" src="/crosshair.svg" alt="" width="32" height="32" /><span id="report-status" class="status-label"></span></span><h3 id="report-title"></h3><a id="report-url" target="_blank" rel="noopener noreferrer"></a><p id="report-scope"></p></div><div class="metrics"><div><strong id="word-count">0</strong><span>{t("palabras extraídas")}</span></div><div><strong id="link-count">0</strong><span>{t("enlaces internos")}</span></div></div></div>
+      <section id="diagnostic-overview" class="diagnostic-overview" aria-label={s('Diagnostic overview','Resumen del diagnóstico')}></section>
+      <details class="visual-preview-panel">
+        <summary>{s('Visual preview · optional','Vista visual · opcional')}</summary>
+        <p>{s('Request a real mobile screenshot from Google PageSpeed Insights. Clicking the button sends this public URL to Google. The image may differ from what our HTML analyzer reads. Availability depends on Google and its quota; it may take up to a minute.','Solicita una captura móvil real a Google PageSpeed Insights. Al pulsar el botón se envía esta URL pública a Google. La imagen puede diferir de lo que lee nuestro analizador HTML. Depende de la disponibilidad y cuota de Google; puede tardar hasta un minuto.')}</p>
+        <button id="visual-preview-button" type="button" class="secondary-button">{s('Request preview from Google','Solicitar vista previa a Google')}</button>
+        <p id="visual-preview-message" role="status" aria-live="polite"></p>
+        <figure id="visual-preview-figure" hidden><img id="visual-preview-image" alt={s('Mobile page screenshot returned by Google PageSpeed Insights','Captura móvil de la página devuelta por Google PageSpeed Insights')} /><figcaption id="visual-preview-caption"></figcaption></figure>
+      </details>
       <div class="report-tabs" role="tablist" aria-label={t("Secciones del informe")}><button type="button" role="tab" id="tab-findings" aria-selected="true" aria-controls="panel-findings" data-tab="findings">01 <span>{t("Diagnóstico")}</span></button><button type="button" role="tab" id="tab-agents" aria-selected="false" aria-controls="panel-agents" tabindex="-1" data-tab="agents">02 <span>{t("Rastreadores")}</span></button><button type="button" role="tab" id="tab-text" aria-selected="false" aria-controls="panel-text" tabindex="-1" data-tab="text">03 <span>{t("Vista de lectura")}</span></button></div>
-      <div id="panel-findings" role="tabpanel" aria-labelledby="tab-findings"><div id="findings-list"></div></div>
+      <div id="panel-findings" role="tabpanel" aria-labelledby="tab-findings">
+        <div id="diagnostic-filters" class="diagnostic-filters"></div>
+        <p id="diagnostic-result-count" class="audit-small" role="status" aria-live="polite"></p>
+        <div id="findings-list"></div><div id="diagnostic-resources"></div>
+      </div>
       <div id="panel-agents" role="tabpanel" aria-labelledby="tab-agents" hidden><div class="panel-intro"><h3>{t("Distintos agentes. Distintos permisos.")}</h3><p>{t("Estas son las reglas declaradas para la ruta analizada. No prueban que el proveedor haya visitado tu web ni que su infraestructura pueda acceder.")}</p></div><div id="agents-list"></div><p class="report-note">{t("Restringir entrenamiento puede ser tu elección. No lo tratamos como un error.")}</p></div>
       <div id="panel-text" role="tabpanel" aria-labelledby="tab-text" hidden><div class="panel-intro"><h3>{t("El contenido que pudimos extraer.")}</h3><p>{t("Extracción de nuestro analizador, hasta 16 000 caracteres. No reproduce exactamente lo que ve cada proveedor ni ejecuta JavaScript.")}</p></div><div id="extracted-text" class="extracted-text"></div></div>
       <p class="report-note">{t("Una comprobación técnica no garantiza indexación, posiciones ni menciones en respuestas de IA.")}</p>
