@@ -1,0 +1,19 @@
+---
+import '../styles/global.css';
+import { translator, type Locale } from '../lib/i18n';
+interface Props { locale?: Locale }
+const { locale = 'en' } = Astro.props;
+const t = translator(locale);
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0e0f" />
+    <title>{t("Can AI Read — Haz tu web más accesible para la IA")}</title>
+    <meta name="description" content={t("Comprueba el acceso, las reglas de rastreo y el contenido extraíble de tu web. Evidencias claras y acciones concretas, sin registro.")} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Open Graph se incorporará cuando estén definidos el dominio y la imagen. -->
+  </head>
+  <body><a class="skip" href="#main">{t("Saltar al contenido")}</a><slot /></body>
+</html>
