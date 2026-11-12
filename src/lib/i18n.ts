@@ -94,7 +94,6 @@ export const translations: Record<string, string> = {
   "No pudimos completar el análisis.": "We could not complete the analysis.",
   "El análisis tardó demasiado. Vuelve a intentarlo.": "The analysis took too long. Please try again.",
   "Error de conexión. Vuelve a intentarlo.": "Connection error. Please try again.",
-  "Analizar mi web ↗": "Analyze my website ↗",
   "Respuesta del servidor": "Server response",
   "Texto en el HTML inicial": "Text in the initial HTML",
   "Directivas de indexación": "Indexing directives",

@@ -7,6 +7,11 @@ const element = <T extends HTMLElement = HTMLElement>(id: string) => document.ge
 const form = element<HTMLFormElement>('audit-form');
 const input = element<HTMLInputElement>('site-url');
 const submit = element<HTMLButtonElement>('analyze-button');
+const submitIcon = submit.querySelector('img');
+function setSubmitLabel(label: string) {
+  submit.textContent = label;
+  if (submitIcon) submit.append(' ', submitIcon);
+}
 const error = element('form-error');
 const loading = element('loading');
 const report = element('report');
@@ -40,14 +45,14 @@ form.addEventListener('submit', async event => {
   error.hidden = true;
   const value = input.value.trim();
   if (!value) { error.textContent = t("Introduce la dirección de una página pública."); error.hidden = false; input.focus(); return; }
-  submit.disabled = true; demoButton.disabled = true; submit.textContent = t("Analizando…"); loading.hidden = false; report.hidden = true; form.setAttribute('aria-busy','true'); loading.scrollIntoView({ behavior:'smooth',block:'center' });
+  submit.disabled = true; demoButton.disabled = true; setSubmitLabel(t("Analizando…")); loading.hidden = false; report.hidden = true; form.setAttribute('aria-busy','true'); loading.scrollIntoView({ behavior:'smooth',block:'center' });
   try {
     const response = await fetch('/api/analyze',{ method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:value,language:locale}), signal: AbortSignal.timeout(25_000) });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || t("No pudimos completar el análisis."));
     render(data);
   } catch (e) { error.textContent = e instanceof Error && e.name === 'TimeoutError' ? t("El análisis tardó demasiado. Vuelve a intentarlo.") : e instanceof Error ? e.message : t("Error de conexión. Vuelve a intentarlo."); error.hidden = false; input.focus(); }
-  finally { submit.disabled = false; demoButton.disabled = false; submit.textContent = t("Analizar mi web ↗"); loading.hidden = true; form.removeAttribute('aria-busy'); }
+  finally { submit.disabled = false; demoButton.disabled = false; setSubmitLabel(t("Analizar mi web")); loading.hidden = true; form.removeAttribute('aria-busy'); }
 });
 document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((button,index,all) => {
   button.addEventListener('click',()=>tab(button.dataset.tab!));
@@ -55,6 +60,12 @@ document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((button,index
 });
 element('download-button').addEventListener('click',()=> { if(!current)return; const blob=new Blob([JSON.stringify({...current,demo:isDemo},null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download=`can-ai-read-${isDemo?'example':new URL(current.url).hostname}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); });
 demoButton.addEventListener('click',()=>render({url:'https://estudio.example/servicios',requestedUrl:'https://estudio.example/servicios',title:t("Estudio Norte — Diseño para marcas que avanzan"),analyzedAt:new Date().toISOString(),status:'limitations',words:246,internalLinks:8,robotsUrl:'https://estudio.example/robots.txt',scope:t("Una URL · HTML inicial · sin ejecutar JavaScript · datos de demostración"),excerpt:(locale === 'es' ? 'Estudio Norte. Diseño para marcas que avanzan.\n\nSomos un estudio de diseño independiente en Lima. Construimos identidades visuales y experiencias digitales para negocios que quieren comunicar con claridad.\n\nNuestros servicios\nIdentidad visual: estrategia, logotipo y sistema visual.\nDiseño web: sitios rápidos, accesibles y fáciles de mantener.\n\nTrabajamos con proyectos de todos los tamaños. Cuéntanos qué estás construyendo.\n\n[Texto ilustrativo. El precio de este ejemplo solo aparece dentro de una imagen y no forma parte del texto extraído.]' : 'Estudio Norte. Design for brands moving forward.\n\nWe are an independent design studio in Lima. We build visual identities and digital experiences for businesses that want to communicate clearly.\n\nOur services\nVisual identity: strategy, logo and visual system.\nWeb design: fast, accessible websites that are easy to maintain.\n\nWe work with projects of all sizes. Tell us what you are building.\n\n[Illustrative text. The price in this example only appears in an image and is not part of the extracted text.]'),findings:[{title:t("Respuesta del servidor"),state:'pass',evidence:t("HTTP 200 · 0 redirecciones · 24.8 KB de HTML (datos ficticios)."),action:t("La URL responde correctamente en este ejemplo.")},{title:t("Texto en el HTML inicial"),state:'pass',evidence:t("246 palabras extraídas en el ejemplo ilustrativo."),action:t("Revisa la vista de lectura para comprobar que incluye la información principal.")},{title:t("Descripción de la página"),state:'warning',evidence:t("No hay meta description en este ejemplo."),action:t("Añade un resumen descriptivo de la página. Esto no garantiza menciones en respuestas de IA.")},{title:t("Permisos de entrenamiento"),state:'info',evidence:t("GPTBot está restringido; OAI-SearchBot está permitido."),action:t("Son preferencias independientes. Bloquear entrenamiento no se trata como un error.")}],agents:[{name:'OAI-SearchBot',provider:'OpenAI',purpose:t("Búsqueda"),state:'allowed',evidence:t("Allow: / (ejemplo)")},{name:'Claude-SearchBot',provider:'Anthropic',purpose:t("Búsqueda"),state:'allowed',evidence:t("Allow: / (ejemplo)")},{name:'Googlebot',provider:'Google',purpose:t("Búsqueda"),state:'allowed',evidence:t("Allow: / (ejemplo)")},{name:'GPTBot',provider:'OpenAI',purpose:t("Entrenamiento"),state:'blocked',evidence:t("Disallow: / (ejemplo)")},{name:'ClaudeBot',provider:'Anthropic',purpose:t("Entrenamiento"),state:'blocked',evidence:t("Disallow: / (ejemplo)")}]},true));
+
+document.querySelectorAll<HTMLDetailsElement>('.faq-list details').forEach(detail => {
+  detail.querySelector('summary')?.addEventListener('click', event => {
+    if (detail.open) event.preventDefault();
+  });
+});
 
 // Only an explicit user choice is saved; automatic detection is re-evaluated on a later visit.
 document.querySelectorAll<HTMLButtonElement>('[data-language]').forEach(button => {
