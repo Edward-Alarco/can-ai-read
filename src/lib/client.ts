@@ -26,14 +26,14 @@ function tab(name: string) {
 function render(data: Report, demo = false) {
   current = data; isDemo = demo;
   setText('report-mode', demo ? t("EJEMPLO · DATOS FICTICIOS") : t("DIAGNÓSTICO DE PÁGINA"));
-  setText('report-status', data.status === 'limitations' ? t("◉ ACCESIBLE CON LIMITACIONES") : t("✓ HTML ACCESIBLE Y EXTRAÍBLE"));
+  setText('report-status', data.status === 'limitations' ? t("ACCESIBLE CON LIMITACIONES") : t("HTML ACCESIBLE Y EXTRAÍBLE"));
   element('report-status').classList.toggle('warning', data.status === 'limitations');
   setText('report-title', data.title);
   const url = element<HTMLAnchorElement>('report-url'); url.textContent = data.url; url.href = data.url;
   setText('report-scope', data.scope + (demo ? t(" · Ejemplo ilustrativo; no se ha visitado este dominio.") : ' · ' + new Date(data.analyzedAt).toLocaleString(locale === 'es' ? 'es-PE' : 'en-US')));
   setText('word-count', data.words.toLocaleString(locale === 'es' ? 'es-PE' : 'en-US')); setText('link-count', String(data.internalLinks));
   const findings = element('findings-list'); findings.replaceChildren();
-  data.findings.forEach(f => { const row = node('article','finding'); const body = node('div',''); body.append(node('h3','',f.title),node('p','',f.evidence),node('p','finding-action',f.action)); row.append(node('span',`finding-state ${f.state}`,f.state === 'pass' ? '✓' : f.state === 'warning' ? '!' : 'i'),body); findings.append(row); });
+  data.findings.forEach(f => { const row = node('article','finding'); const body = node('div',''); body.append(node('h3','',f.title),node('p','',f.evidence),node('p','finding-action',f.action)); const icon = document.createElement('img'); icon.className = `finding-state ${f.state}`; icon.src = f.state === 'pass' ? '/checkcircle.svg' : f.state === 'warning' ? '/warningcircle.svg' : '/infocircle.svg'; icon.alt = ''; icon.width = 32; icon.height = 32; row.append(icon, body); findings.append(row); });
   const agents = element('agents-list'); agents.replaceChildren();
   data.agents.forEach(a => { const row = node('div','agent-row'); const identity = node('div',''); identity.append(node('strong','',a.name),node('small','',`${a.provider} · ${a.purpose}`)); row.append(identity,node('p','',a.evidence),node('span',`agent-badge ${a.state}`,a.state === 'allowed' ? t("PERMITIDO POR REGLAS") : a.state === 'blocked' ? t("RESTRINGIDO POR REGLAS") : t("NO VERIFICADO"))); agents.append(row); });
   setText('extracted-text',data.excerpt || t("No se pudo extraer texto del contenido principal."));
