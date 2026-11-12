@@ -31,6 +31,8 @@ Astro.response.headers.set('Cache-Control', 'private, no-store');
 
     <section id="loading" class="wrap loading-panel" hidden aria-live="polite" aria-atomic="true"><div class="scan-line"></div><span class="eyebrow">{t("ANÁLISIS EN CURSO")}</span><h2>{t("Siguiendo las señales de tu web")}<span class="accent">…</span></h2><p id="loading-message">{t("Solicitando el HTML y comprobando las reglas de acceso.")}</p><div class="loader-track"><div></div></div></section>
 
+    <section id="empty-result" class="wrap loading-panel" hidden><span class="eyebrow">{t("SIN RESULTADOS")}</span><h2>{t("No se han encontrado resultados")}<span class="accent">.</span></h2><p id="empty-message"></p><img class="empty-icon" src="/detective.svg" alt="" width="32" height="32"></section>
+
     <section id="report" class="wrap report-section" hidden tabindex="-1" aria-labelledby="report-heading">
       <div class="report-top"><div><span id="report-mode" class="eyebrow">{t("DIAGNÓSTICO DE PÁGINA")}</span><h2 id="report-heading">{t("Tu informe, sin cajas negras.")}</h2></div><button id="download-button" type="button" class="secondary-button">{t("Descargar JSON ↓")}</button></div>
       <div class="report-summary"><div><span class="status-row"><img class="status-icon" src="/crosshair.svg" alt="" width="32" height="32" /><span id="report-status" class="status-label"></span></span><h3 id="report-title"></h3><a id="report-url" target="_blank" rel="noopener noreferrer"></a><p id="report-scope"></p></div><div class="metrics"><div><strong id="word-count">0</strong><span>{t("palabras extraídas")}</span></div><div><strong id="link-count">0</strong><span>{t("enlaces internos")}</span></div></div></div>

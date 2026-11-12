@@ -77,6 +77,8 @@ export const translations: Record<string, string> = {
   "CRITERIOS BASADOS EN DOCUMENTACIÓN PÚBLICA": "CHECKS BASED ON PUBLIC DOCUMENTATION",
   "Construido para entender la web.": "Built to understand the web.",
   "Volver arriba": "Back to top",
+  "SIN RESULTADOS": "NO RESULTS",
+  "No se han encontrado resultados": "No results found",
   "Can AI Read — Haz tu web más accesible para la IA": "Can AI Read — Make your website easier for AI to access",
   "Comprueba el acceso, las reglas de rastreo y el contenido extraíble de tu web. Evidencias claras y acciones concretas, sin registro.": "Check your website’s access, crawler rules and extractable content. Clear evidence and actionable findings, no sign-up.",
   "EJEMPLO · DATOS FICTICIOS": "SAMPLE · FICTIONAL DATA",

@@ -14,6 +14,7 @@ function setSubmitLabel(label: string) {
 }
 const error = element('form-error');
 const loading = element('loading');
+const empty = element('empty-result');
 const report = element('report');
 const demoButton = element<HTMLButtonElement>('demo-button');
 let current: Report | null = null;
@@ -25,6 +26,7 @@ function tab(name: string) {
 }
 function render(data: Report, demo = false) {
   current = data; isDemo = demo;
+  empty.hidden = true;
   setText('report-mode', demo ? t("EJEMPLO · DATOS FICTICIOS") : t("DIAGNÓSTICO DE PÁGINA"));
   setText('report-status', data.status === 'limitations' ? t("ACCESIBLE CON LIMITACIONES") : t("HTML ACCESIBLE Y EXTRAÍBLE"));
   element('report-status').classList.toggle('warning', data.status === 'limitations');
@@ -45,14 +47,23 @@ form.addEventListener('submit', async event => {
   error.hidden = true;
   const value = input.value.trim();
   if (!value) { error.textContent = t("Introduce la dirección de una página pública."); error.hidden = false; input.focus(); return; }
-  submit.disabled = true; demoButton.disabled = true; setSubmitLabel(t("Analizando…")); loading.hidden = false; report.hidden = true; form.setAttribute('aria-busy','true'); loading.scrollIntoView({ behavior:'smooth',block:'center' });
+  const started = performance.now();
+  submit.disabled = true; demoButton.disabled = true; setSubmitLabel(t("Analizando…")); loading.hidden = false; empty.hidden = true; report.hidden = true; form.setAttribute('aria-busy','true'); loading.scrollIntoView({ behavior:'smooth',block:'center' });
+  let failure = '';
+  const waitForMinimum = async () => { const remaining = 2000 - (performance.now() - started); if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining)); };
   try {
     const response = await fetch('/api/analyze',{ method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:value,language:locale}), signal: AbortSignal.timeout(25_000) });
     const data = await response.json();
+    await waitForMinimum();
     if (!response.ok) throw new Error(data.error || t("No pudimos completar el análisis."));
     render(data);
-  } catch (e) { error.textContent = e instanceof Error && e.name === 'TimeoutError' ? t("El análisis tardó demasiado. Vuelve a intentarlo.") : e instanceof Error ? e.message : t("Error de conexión. Vuelve a intentarlo."); error.hidden = false; input.focus(); }
-  finally { submit.disabled = false; demoButton.disabled = false; setSubmitLabel(t("Analizar mi web")); loading.hidden = true; form.removeAttribute('aria-busy'); }
+  } catch (e) {
+    await waitForMinimum();
+    failure = e instanceof Error && e.name === 'TimeoutError' ? t("El análisis tardó demasiado. Vuelve a intentarlo.") : e instanceof Error ? e.message : t("Error de conexión. Vuelve a intentarlo.");
+  } finally {
+    submit.disabled = false; demoButton.disabled = false; setSubmitLabel(t("Analizar mi web")); loading.hidden = true; form.removeAttribute('aria-busy');
+    if (failure) { setText('empty-message', failure); empty.hidden = false; empty.scrollIntoView({ behavior:'smooth', block:'center' }); }
+  }
 });
 document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((button,index,all) => {
   button.addEventListener('click',()=>tab(button.dataset.tab!));
