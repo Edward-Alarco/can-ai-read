@@ -8,7 +8,6 @@ Astro.response.headers.set('Vary', 'Accept-Language, Cookie');
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 ---
 <Layout locale={locale}>
-  <div class="ambient" aria-hidden="true"></div>
   <header class="site-header wrap flex items-center justify-between">
     <a href="/" class="brand" aria-label={t("Can AI Read, inicio")}><span class="brand-mark">&lt;/&gt;</span> can ai read<span class="brand-dot">.</span></a>
     <nav class="flex items-center gap-7" aria-label={t("Principal")}><a class="nav-link" href="#como-funciona">{t("Cómo funciona")}</a><a class="nav-link" href="#criterios">{t("Qué analizamos")}</a><div class="language-switch" role="group" aria-label={locale === 'es' ? 'Idioma' : 'Language'}><button type="button" data-language="en" aria-pressed={locale === 'en'} lang="en">EN</button><button type="button" data-language="es" aria-pressed={locale === 'es'} lang="es">ES</button></div><span class="version">BETA 0.1</span></nav>
