@@ -100,7 +100,7 @@ summary{cursor:pointer}
 .site-footer{border-top:1px solid var(--border);padding:28px 0;display:flex;justify-content:space-between;align-items:center}
 .site-footer .brand{font-size:15px}
 .site-footer .brand-mark{font-size:18px}
-.site-footer>span,.site-footer>a:last-child{font-size:12px;color:var(--muted)}
+.site-footer>a:last-child{font-size:12px;color:var(--muted)}
 #form-error{margin:14px 0;color:var(--text);font-size:13px;text-align:left}
 .report-section,.loading-panel{border:1px solid var(--border);border-radius:12px;padding:32px;margin-top:0;margin-bottom:65px;background:var(--panel);box-shadow:0 20px 60px rgb(24 24 27 / 0.04)}
 .report-top{display:flex;align-items:center;justify-content:space-between;gap:20px}
@@ -191,7 +191,6 @@ h1{letter-spacing:-.035em;font-size:clamp(36px,8.8vw,57px)}
 .sources{display:block;padding:15px 0 30px}
 .sources>div{margin-top:15px}
 .site-footer{flex-wrap:wrap;gap:15px}
-.site-footer>span{display:none}
 .report-section{padding:18px;margin-bottom:35px}
 .report-top{align-items:start}
 .report-top h2,.report-top .loading-title{font-size:22px}

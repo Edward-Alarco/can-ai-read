@@ -73,7 +73,6 @@ export const translations: Record<string, string> = {
   "¿Se guardan mis análisis?": "Are my reports saved?",
   "No guardamos informes en una base de datos. El resultado se mantiene en esta pestaña y puedes descargarlo. El proveedor de alojamiento puede conservar registros técnicos. Analiza únicamente URLs públicas sin información sensible.": "We do not store reports in a database. The result stays in this tab and you can download it. The hosting provider may retain technical logs. Only analyze public URLs without sensitive information.",
   "CRITERIOS BASADOS EN DOCUMENTACIÓN PÚBLICA": "CHECKS BASED ON PUBLIC DOCUMENTATION",
-  "Construido para entender la web.": "Built to understand the web.",
   "Volver arriba": "Back to top",
   "SIN RESULTADOS": "NO RESULTS",
   "No se han encontrado resultados": "No results found",

@@ -80,7 +80,7 @@ function render(data: Report, demo = false) {
   const agents = element('agents-list'); agents.replaceChildren();
   data.agents.forEach(a => { const row = node('div','agent-row'); const identity = node('div',''); identity.append(node('strong','',a.name),node('small','',`${a.provider} · ${a.purpose}`)); row.append(identity,node('p','',a.evidence),node('span',`agent-badge ${a.state}`,a.state === 'allowed' ? t("PERMITIDO POR REGLAS") : a.state === 'blocked' ? t("RESTRINGIDO POR REGLAS") : t("NO VERIFICADO"))); agents.append(row); });
   setText('extracted-text',data.excerpt || t("No se pudo extraer texto del contenido principal."));
-  tab('findings'); report.hidden = false; report.focus({ preventScroll: true }); report.scrollIntoView({ behavior: 'smooth',block:'start' });
+  tab('findings'); loading.hidden = true; report.hidden = false; report.focus({ preventScroll: true }); report.scrollIntoView({ behavior: 'smooth',block:'start' });
 }
 form.addEventListener('submit', async event => {
   event.preventDefault();
