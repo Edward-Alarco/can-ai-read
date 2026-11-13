@@ -2,7 +2,7 @@ import { translator, type Locale } from './i18n';
 const locale: Locale = document.documentElement.lang === 'es' ? 'es' : 'en';
 const t = translator(locale);
 import type { Report } from './diagnostics';
-import { renderDiagnostics } from './report-ui';
+import { renderDiagnostics, openTabsGuideDialog } from './report-ui';
 const minimumLoadMs = 3000;
 const maximumLoadMs = 10000;
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -73,9 +73,7 @@ function render(data: Report, demo = false) {
   element('report-status').classList.toggle('warning', data.status === 'limitations');
   setText('report-title', data.title);
   const url = element<HTMLAnchorElement>('report-url'); url.textContent = data.url; url.href = data.url;
-  setText('report-scope', data.scope + (demo ? t(" · Ejemplo ilustrativo; no se ha visitado este dominio.") : ' · ' + new Date(data.analyzedAt).toLocaleString(locale === 'es' ? 'es-PE' : 'en-US')));
-  setText('word-count', data.words.toLocaleString(locale === 'es' ? 'es-PE' : 'en-US')); setText('link-count', String(data.internalLinks));
-  renderDiagnostics(data,locale,demo);
+  renderDiagnostics(data,locale);
   if (demo) discardScreenshot();
   const agents = element('agents-list'); agents.replaceChildren();
   data.agents.forEach(a => { const row = node('div','agent-row'); const identity = node('div',''); identity.append(node('strong','',a.name),node('small','',`${a.provider} · ${a.purpose}`)); row.append(identity,node('p','',a.evidence),node('span',`agent-badge ${a.state}`,a.state === 'allowed' ? t("PERMITIDO POR REGLAS") : a.state === 'blocked' ? t("RESTRINGIDO POR REGLAS") : t("NO VERIFICADO"))); agents.append(row); });
@@ -119,6 +117,10 @@ form.addEventListener('submit', async event => {
 document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((button,index,all) => {
   button.addEventListener('click',()=>tab(button.dataset.tab!));
   button.addEventListener('keydown',event => { let target = index; if(event.key==='ArrowRight')target=(index+1)%all.length; else if(event.key==='ArrowLeft')target=(index+all.length-1)%all.length; else if(event.key==='Home')target=0; else if(event.key==='End')target=all.length-1; else return; event.preventDefault(); all[target].click(); all[target].focus(); });
+});
+element<HTMLButtonElement>('tabs-guide-button').addEventListener('click',event=>{
+  const opener=event.currentTarget as HTMLButtonElement;
+  openTabsGuideDialog(locale,opener);
 });
 element('download-button').addEventListener('click',()=> { if(!current)return; const blob=new Blob([JSON.stringify({...current,demo:isDemo},null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download=`can-ai-read-${isDemo?'example':new URL(current.url).hostname}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); });
 document.querySelectorAll<HTMLDetailsElement>('.faq-list details').forEach(detail => {

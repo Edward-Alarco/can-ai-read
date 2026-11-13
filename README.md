@@ -10,6 +10,7 @@ A minimal website checker that inspects a public URL for observable access barri
 - Meta robots and X-Robots-Tag inspection; JSON-LD syntax checks.
 - Separate robots.txt rules for search and training agents from OpenAI, Anthropic and Google.
 - Prioritized expandable findings: plain-language explanations, source evidence, HTML line numbers, correction guidance, code examples, verification steps and official documentation.
+- A 0–100 technical readability score with a visible breakdown of access, extractable content and context signals. It does not claim AI understanding, indexing or citations.
 - Action filters, a copyable action plan, reading view and JSON export.
 - Automatic desktop screenshot of the analyzed public page, without performance metrics.
 - Clearly labeled sample report. No database or AI API keys required.
@@ -64,7 +65,7 @@ Supabase is not integrated yet. Reports are not persisted in a database; hosting
 
 ## Validation
 
-Type checks, 26 automated tests and the production build pass. Tests cover URL validation, robots rules, controlled HTML reports, language selection and API error localization. External website connectivity still needs verification from a local machine or Vercel: the development environment could not complete the external connection test. The improved diagnostic has been exercised in the desktop preview using controlled demo data. Real external screenshot delivery has not been verified in this environment. No real mobile-browser verification has been completed.
+Type checks, 32 automated tests and the production build pass. Tests cover URL validation, robots rules, the readability score, controlled HTML reports, language selection and API error localization. External website connectivity still needs verification from a local machine or Vercel: the development environment could not complete the external connection test. The improved diagnostic has been exercised in the desktop preview using controlled demo data. Real external screenshot delivery has not been verified in this environment. No real mobile-browser verification has been completed.
 
 ## Reference documentation
 
@@ -78,5 +79,5 @@ The report presents ten HTML-based checks with explicit statuses and priorities.
 
 Evidence snippets come from the received HTML and include parser-provided line numbers where available. These lines are **not repository source lines**. The checker cannot inspect a scanned site's private files. CMS/framework hints come from public HTML; correction locations are labeled as common, unverified suggestions. Published script/CSS URLs are listed as observed resources and are not fetched or individually audited.
 
-No overall AI-understanding or citation probability score is generated. Metrics include HTML bytes, analysis duration, heading/image counts, words and links; analysis duration is not a page-speed benchmark.
+The report includes a 0–100 technical readability score derived from the same ten checks, with group weights and hard caps shown in the interface. It is not a measure of AI understanding, indexing or citation probability. Metrics also include HTML bytes, analysis duration, heading/image counts, words and links; analysis duration is not a page-speed benchmark.
 

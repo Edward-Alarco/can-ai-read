@@ -1,4 +1,5 @@
 import { translator, type Locale } from './i18n';
+import { computeScore } from './score';
 export type Evidence = { location: string; value: string; line?: number };
 export type AgentResult = { name: string; provider: string; purpose: string; state: string; evidence: string };
 export type AuditFacts = {
@@ -146,7 +147,7 @@ export function reportFromFacts(facts: AuditFacts, locale: Locale) {
     scope:translator(locale)('Una URL · HTML inicial · sin ejecutar JavaScript · sin comprobar indexación ni citas reales'),
     overview:{passed:findings.filter(f=>f.state==='pass').length,actions:actions.length,highPriority:actions.filter(f=>f.priority==='high').length,checks:findings.length},
     metrics:{htmlBytes:facts.htmlBytes,elapsedMs:facts.elapsedMs,headings:facts.headings.length,images:facts.images.length,missingAlt:facts.images.filter(i=>i.alt===null).length,jsonLd:facts.jsonLd.length},
-    platform:facts.platform,resources:facts.resources,
+    platform:facts.platform,resources:facts.resources,score:computeScore(findings),
   };
 }
 export type Report = ReturnType<typeof reportFromFacts>;
