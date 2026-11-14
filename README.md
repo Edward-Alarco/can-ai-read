@@ -34,9 +34,19 @@ npm run build
 
 On Windows, the project can live at `C:\Users\edwar\Desktop\Projects\can-ai-read`.
 
+## Public site URL
+
+Canonical links, Open Graph tags, `robots.txt` and `sitemap.xml` use a single public site URL from `astro.config.mjs`, never the localhost or preview origin.
+
+Set it in this order:
+
+1. The `PUBLIC_SITE_URL` environment variable (for example `https://your-domain.com`).
+2. Otherwise `VERCEL_PROJECT_PRODUCTION_URL`, with `https://` added if it is missing.
+3. Otherwise the placeholder `https://canairead.com` in `astro.config.mjs`. Replace that constant when the final domain is confirmed.
+
 ## Vercel
 
-Import this repository in Vercel and select Astro. Use Node.js 22.x, install with `npm ci`, and build with `npm run build`. The included `@astrojs/vercel` adapter provides the Node runtime required by `/api/analyze`. No environment variables are required for the HTML diagnostic.
+Import this repository in Vercel and select Astro. Use Node.js 22.x, install with `npm ci`, and build with `npm run build`. The included `@astrojs/vercel` adapter provides the Node runtime required by `/api/analyze`. No environment variables are required for the HTML diagnostic. To publish correct canonical and Open Graph URLs, set `PUBLIC_SITE_URL` to the final domain or rely on `VERCEL_PROJECT_PRODUCTION_URL`.
 
 Deployment has not been performed. Before allowing public traffic, configure hosting/WAF rate limits and abuse controls. This MVP does not implement distributed request quotas; Origin checks do not replace rate limiting.
 
@@ -56,7 +66,7 @@ Interface copy, metadata, report explanations and errors are localized. Original
 
 ## Roadmap
 
-- Final domain, branding and Open Graph metadata/image.
+- Replace the placeholder site URL in `astro.config.mjs` (or set `PUBLIC_SITE_URL`) with the final domain.
 - Rendered DOM comparison and standards-complete robots parsing.
 - Optional Supabase Auth and Postgres for accounts, history and quotas.
 - Site-wide sampling and monitoring after validating demand.

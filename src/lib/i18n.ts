@@ -143,7 +143,6 @@ export const translations: Record<string, string> = {
   "No se han encontrado resultados": "No results found",
   "Can AI Read — Haz tu web más accesible para la IA": "Can AI Read — Make your website easier for AI to access",
   "Comprueba si la IA puede leer tu web pública: acceso, reglas de rastreo y texto extraíble del HTML. Evidencias claras y el siguiente paso, sin registro.": "Check whether AI can read your public website: access, crawler rules and HTML text we can extract. Clear evidence and a concrete next step, with no sign-up.",
-  "inteligencia artificial, rastreo web, robots.txt, contenido extraíble, SEO técnico, accesibilidad para IA": "artificial intelligence, web crawling, robots.txt, extractable content, technical SEO, AI accessibility",
   "EJEMPLO · DATOS FICTICIOS": "SAMPLE · FICTIONAL DATA",
   "ACCESIBLE CON LIMITACIONES": "ACCESSIBLE WITH LIMITATIONS",
   "HTML ACCESIBLE Y EXTRAÍBLE": "HTML ACCESSIBLE AND EXTRACTABLE",

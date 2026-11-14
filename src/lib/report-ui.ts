@@ -64,15 +64,15 @@ type Say=(en:string,es:string)=>string;
 function findingCard(f:Finding,s:Say,open:boolean,deducted:number){
   const details=el('details',`audit-card audit-${f.state}`);details.id=`audit-${f.id}`;details.open=open;
   const summary=el('summary','audit-card-summary');
-  const icon=el('img','audit-state-icon');icon.src=f.state==='pass'?'/checkcircle.svg':f.state==='warning'?'/warningcircle.svg':'/infocircle.svg';icon.alt=f.state==='pass'?s('Passed','Correcto'):f.state==='warning'?s('Review','Revisar'):s('Information','Información');icon.width=22;icon.height=22;
+  const icon=el('img','audit-state-icon');icon.src=f.state==='pass'?'/icons/checkcircle.svg':f.state==='warning'?'/icons/warningcircle.svg':'/icons/infocircle.svg';icon.alt=f.state==='pass'?s('Passed','Correcto'):f.state==='warning'?s('Review','Revisar'):s('Information','Información');icon.width=22;icon.height=22;
   const text=el('span','audit-summary-copy');text.append(el('strong','',f.userTitle),el('span','audit-summary-action',f.action));
   const badges=el('span','audit-badges');
   if(f.state!=='pass'){const status=f.state==='warning'?s('Review','Revisar'):s('Information','Información');badges.append(el('span',`audit-badge ${f.state}`,status));}
   if(f.priority!=='none')badges.append(el('span','audit-badge',f.priority==='high'?s('High priority','Prioridad alta'):f.priority==='medium'?s('Medium priority','Prioridad media'):s('Low priority','Prioridad baja')));
   if(deducted>0)badges.append(el('span','audit-badge deduction',`\u2212${deducted}`));
   const toggle=el('span','audit-toggle');toggle.setAttribute('aria-hidden','true');
-  const plus=el('img','audit-plus');plus.src='/plus.svg';plus.alt=s('Expand','Expandir');plus.width=14;plus.height=14;
-  const minus=el('img','audit-minus');minus.src='/minus.svg';minus.alt=s('Collapse','Contraer');minus.width=14;minus.height=14;
+  const plus=el('img','audit-plus');plus.src='/icons/plus.svg';plus.alt=s('Expand','Expandir');plus.width=14;plus.height=14;
+  const minus=el('img','audit-minus');minus.src='/icons/minus.svg';minus.alt=s('Collapse','Contraer');minus.width=14;minus.height=14;
   toggle.append(plus,minus);
   summary.append(icon,text,badges,toggle);
   const body=el('div','audit-card-body');

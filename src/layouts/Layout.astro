@@ -4,22 +4,47 @@ import { translator, type Locale } from '../lib/i18n';
 interface Props { locale?: Locale }
 const { locale = 'en' } = Astro.props;
 const t = translator(locale);
+const title = t("Can AI Read — Haz tu web más accesible para la IA");
+const description = t("Comprueba si la IA puede leer tu web pública: acceso, reglas de rastreo y texto extraíble del HTML. Evidencias claras y el siguiente paso, sin registro.");
+const site = Astro.site!;
+const siteUrl = new URL('/', site).href;
+const ogImage = new URL(locale === 'es' ? '/og-image-es.png' : '/og-image-en.png', site).href;
+const ogLocale = locale === 'es' ? 'es_419' : 'en_US';
 ---
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#FFFFFF" />
-    <title>{t("Can AI Read — Haz tu web más accesible para la IA")}</title>
-    <meta name="description" content={t("Comprueba si la IA puede leer tu web pública: acceso, reglas de rastreo y texto extraíble del HTML. Evidencias claras y el siguiente paso, sin registro.")} />
-    <meta name="keywords" content={t("inteligencia artificial, rastreo web, robots.txt, contenido extraíble, SEO técnico, accesibilidad para IA")} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={siteUrl} />
     <meta name="author" content="Edward Alarco" />
     <meta name="publisher" content="Edward Alarco" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..700&family=Space+Grotesk:wght@400..700&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- Open Graph se incorporará cuando estén definidos el dominio y la imagen. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:site_name" content="can ai read." />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="can ai read." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="can ai read." />
   </head>
   <body><a class="skip" href="#main">{t("Saltar al contenido")}</a><slot /></body>
 </html>
