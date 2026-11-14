@@ -22,7 +22,9 @@ input:focus{outline:none}
 .site-footer .brand-logo{height:20px}
 @media(max-width:480px){.brand-logo-full{display:none}.brand-logo-mark{display:block}}
 .text-link:hover{color:var(--accent)}
-.version{font-size:10px;font-family:var(--font-body);letter-spacing:1.5px;border:1px solid var(--border);border-radius:4px;padding:5px 9px;color:var(--muted)}
+.version{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-family:var(--font-body);letter-spacing:1.5px;border:1px solid var(--border);border-radius:4px;padding:5px 9px;color:var(--muted)}
+.version img{display:block;width:14px;height:14px}
+.version:hover{border-color:var(--text);color:var(--text)}
 .hero{text-align:center;padding-top:70px;padding-bottom:65px;min-height:82vh;display:flex;align-items:center}
 .eyebrow{font-family:var(--font-body);font-size:11px;letter-spacing:1.7px;color:var(--muted);display:block;font-weight:bold;width:fit-content}
 .hero .eyebrow{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--border);padding:7px 13px;border-radius:30px;color:var(--text);background:var(--panel)}

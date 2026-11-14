@@ -12,7 +12,7 @@ Astro.response.headers.set('Cache-Control', 'private, no-store');
 <Layout locale={locale}>
   <header class="site-header wrap flex items-center justify-between">
     <a href="/" class="brand" aria-label={t("Can AI Read, inicio")}><img class="brand-logo brand-logo-full" src="/icons/logo.svg" alt="can ai read." width="203" height="24" /><img class="brand-logo brand-logo-mark" src="/icons/logo-isotipo.svg" alt="can ai read." width="51" height="24" /></a>
-    <nav class="flex items-center gap-7" aria-label={t("Principal")}><div class="language-switch" role="group" aria-label={locale === 'es' ? 'Idioma' : 'Language'}><button type="button" data-language="en" aria-pressed={locale === 'en'} lang="en">EN</button><button type="button" data-language="es" aria-pressed={locale === 'es'} lang="es">ES</button></div><span class="version">BETA 0.1</span></nav>
+    <nav class="flex items-center gap-7" aria-label={t("Principal")}><div class="language-switch" role="group" aria-label={locale === 'es' ? 'Idioma' : 'Language'}><button type="button" data-language="en" aria-pressed={locale === 'en'} lang="en">EN</button><button type="button" data-language="es" aria-pressed={locale === 'es'} lang="es">ES</button></div><a class="version" href="https://github.com/Edward-Alarco/can-ai-read" target="_blank" rel="noopener noreferrer">BETA 0.1<img src="/icons/github.svg" alt="GitHub" width="14" height="14" /></a></nav>
   </header>
   <main id="main">
     <section class="hero wrap">
