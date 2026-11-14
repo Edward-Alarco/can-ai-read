@@ -122,7 +122,27 @@ element<HTMLButtonElement>('tabs-guide-button').addEventListener('click',event=>
   const opener=event.currentTarget as HTMLButtonElement;
   openTabsGuideDialog(locale,opener);
 });
-element('download-button').addEventListener('click',()=> { if(!current)return; const blob=new Blob([JSON.stringify({...current,demo:isDemo},null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download=`can-ai-read-${isDemo?'example':new URL(current.url).hostname}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); });
+element('download-button').addEventListener('click', async () => {
+  if (!current) return;
+  const button = element<HTMLButtonElement>('download-button');
+  if (button.disabled) return;
+  const label = button.textContent || '';
+  button.disabled = true;
+  button.textContent = t("Generando reporte…");
+  try {
+    const { downloadReportPdf } = await import('./report-pdf');
+    await downloadReportPdf(current, { locale, isDemo, screenshotDataUrl: screenshotUrl || null });
+  } catch (error) {
+    console.warn('Could not generate the report PDF.', error);
+    button.textContent = t("No se pudo generar el PDF. Vuelve a intentarlo.");
+    await new Promise(resolve => setTimeout(resolve, 2500));
+  } finally {
+    if (button.isConnected) {
+      button.disabled = false;
+      button.textContent = label;
+    }
+  }
+});
 document.querySelectorAll<HTMLDetailsElement>('.faq-list details').forEach(detail => {
   detail.querySelector('summary')?.addEventListener('click', event => {
     if (detail.open) event.preventDefault();

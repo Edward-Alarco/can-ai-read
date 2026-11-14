@@ -4,7 +4,7 @@ import { translator, type Locale } from '../lib/i18n';
 interface Props { locale?: Locale }
 const { locale = 'en' } = Astro.props;
 const t = translator(locale);
-const title = t("Can AI Read — Haz tu web más accesible para la IA");
+const title = t("Can AI Read You — ¿La IA puede leer tu web?");
 const description = t("Comprueba si la IA puede leer tu web pública: acceso, reglas de rastreo y texto extraíble del HTML. Evidencias claras y el siguiente paso, sin registro.");
 const site = Astro.site!;
 const siteUrl = new URL('/', site).href;
@@ -31,7 +31,7 @@ const ogLocale = locale === 'es' ? 'es_419' : 'en_US';
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:url" content={siteUrl} />
-    <meta property="og:site_name" content="can ai read." />
+    <meta property="og:site_name" content="can ai read you." />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
@@ -39,12 +39,12 @@ const ogLocale = locale === 'es' ? 'es_419' : 'en_US';
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="can ai read." />
+    <meta property="og:image:alt" content="can ai read you." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="can ai read." />
+    <meta name="twitter:image:alt" content="can ai read you." />
   </head>
   <body><a class="skip" href="#main">{t("Saltar al contenido")}</a><slot /></body>
 </html>

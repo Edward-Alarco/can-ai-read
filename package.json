@@ -1,5 +1,5 @@
 {
-  "name": "can-ai-read",
+  "name": "canaireadyou",
   "version": "0.2.0",
   "private": true,
   "type": "module",
@@ -17,6 +17,7 @@
     "astro": "^5.16.0",
     "cheerio": "^1.1.0",
     "ipaddr.js": "^2.2.0",
+    "jspdf": "^4.2.1",
     "puppeteer-core": "^25.17.0",
     "tailwindcss": "^4.1.0",
     "undici": "^6.21.0"

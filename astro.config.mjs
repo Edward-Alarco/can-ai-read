@@ -2,8 +2,7 @@ import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 
-// TODO: replace this placeholder with the final domain once it is confirmed.
-const PLACEHOLDER_SITE_URL = 'https://canairead.com';
+const PLACEHOLDER_SITE_URL = 'https://canaireadyou.com';
 
 function resolveSiteUrl() {
   const explicit = process.env.PUBLIC_SITE_URL?.trim();
