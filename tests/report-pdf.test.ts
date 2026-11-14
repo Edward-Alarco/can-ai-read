@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import zlib from 'node:zlib';
+import fs from 'node:fs';
+import type { Report } from '../src/lib/diagnostics';
 import { createDemoReport } from '../src/lib/demo-report';
 import { buildReportPdf, reportPdfFilename, toPdfText } from '../src/lib/report-pdf';
 
@@ -53,6 +55,43 @@ test('an English demo report PDF uses English section labels', async () => {
   assert.match(text, /Reading view/);
   assert.match(text, /Recommendation/);
   assert.match(text, /Access/);
+});
+
+test('broken logo and screenshot images fail soft: the PDF is still produced with the text wordmark', async () => {
+  const report = createDemoReport('en');
+  const errors: unknown[] = [];
+  const original = console.error;
+  console.error = (...args: unknown[]) => { errors.push(args); };
+  try {
+    const doc = await buildReportPdf(report, {
+      locale: 'en',
+      logoDataUrl: 'data:image/png;base64,AAAA',
+      screenshotDataUrl: 'data:image/jpeg;base64,/9j/AAAA',
+    });
+    const raw = Buffer.from(doc.output('arraybuffer'));
+    assert.equal(raw.subarray(0, 5).toString(), '%PDF-');
+    const text = pdfText(raw);
+    assert.match(text, /can ai read you\./);
+    assert.match(text, /Findings/);
+  } finally {
+    console.error = original;
+  }
+  assert.ok(errors.length >= 1, 'the swallowed image errors should be logged with console.error');
+});
+
+test('a real analysis response (example.com) renders to a PDF', async () => {
+  const report = JSON.parse(fs.readFileSync(new URL('./fixtures/example-com-report.json', import.meta.url), 'utf8')) as Report;
+  for (const locale of ['en', 'es'] as const) {
+    const doc = await buildReportPdf(report, { locale });
+    const raw = Buffer.from(doc.output('arraybuffer'));
+    assert.equal(raw.subarray(0, 5).toString(), '%PDF-');
+    assert.match(pdfText(raw), /example\.com/);
+  }
+});
+
+test('the dev server pre-bundles jspdf so the dynamic import does not hit a stale optimized chunk', () => {
+  const config = fs.readFileSync(new URL('../astro.config.mjs', import.meta.url), 'utf8');
+  assert.match(config, /optimizeDeps:\s*\{\s*include:\s*\[[^\]]*'jspdf'/);
 });
 
 function pdfText(raw: Buffer): string {

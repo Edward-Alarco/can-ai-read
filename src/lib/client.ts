@@ -3,7 +3,7 @@ const locale: Locale = document.documentElement.lang === 'es' ? 'es' : 'en';
 const t = translator(locale);
 import type { Report } from './diagnostics';
 import { renderDiagnostics, openTabsGuideDialog } from './report-ui';
-const minimumLoadMs = 3000;
+const minimumLoadMs = 2000;
 const maximumLoadMs = 10000;
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const form = element<HTMLFormElement>('audit-form');
@@ -133,7 +133,7 @@ element('download-button').addEventListener('click', async () => {
     const { downloadReportPdf } = await import('./report-pdf');
     await downloadReportPdf(current, { locale, isDemo, screenshotDataUrl: screenshotUrl || null });
   } catch (error) {
-    console.warn('Could not generate the report PDF.', error);
+    console.error('Could not generate the report PDF.', error);
     button.textContent = t("No se pudo generar el PDF. Vuelve a intentarlo.");
     await new Promise(resolve => setTimeout(resolve, 2500));
   } finally {

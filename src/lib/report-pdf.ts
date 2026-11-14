@@ -94,14 +94,19 @@ export async function buildReportPdf(report: Report, options: ReportPdfOptions):
 }
 
 export async function downloadReportPdf(report: Report, options: ReportPdfOptions): Promise<string> {
-  const logoDataUrl = options.logoDataUrl ?? await loadLogoDataUrl();
-  const screenshotDataUrl = options.screenshotDataUrl?.startsWith('data:')
-    ? options.screenshotDataUrl
-    : options.screenshotDataUrl
-      ? await rasterizeSource(options.screenshotDataUrl, 'image/jpeg', 0.72, 1400)
-      : null;
   const generatedAt = options.generatedAt ?? new Date();
-  const doc = await buildReportPdf(report, { ...options, logoDataUrl, screenshotDataUrl, generatedAt });
+  // The logo and the screenshot are decorative: if either fails, the PDF is still produced
+  // (with the text wordmark and without the screenshot).
+  const logoDataUrl = await optionalAsset('logo', () => options.logoDataUrl !== undefined ? Promise.resolve(options.logoDataUrl) : loadLogoDataUrl());
+  const screenshotDataUrl = await optionalAsset('screenshot', () => prepareScreenshot(options.screenshotDataUrl));
+  let doc: jsPDF;
+  try {
+    doc = await buildReportPdf(report, { ...options, logoDataUrl, screenshotDataUrl, generatedAt });
+  } catch (error) {
+    if (!logoDataUrl && !screenshotDataUrl) throw error;
+    console.error('[report-pdf] Could not render the PDF with images; retrying without logo and screenshot.', error);
+    doc = await buildReportPdf(report, { ...options, logoDataUrl: null, screenshotDataUrl: null, generatedAt });
+  }
   const filename = reportPdfFilename(report, options.isDemo, generatedAt);
   doc.save(filename);
   return filename;
@@ -170,7 +175,8 @@ function renderReport(doc: jsPDF, report: Report, options: ReportPdfOptions) {
     try {
       const logoSize = imageSize(options.logoDataUrl, 76, 9);
       doc.addImage(options.logoDataUrl, 'PNG', MARGIN_X, y - 1, logoSize.width, logoSize.height, undefined, 'FAST');
-    } catch {
+    } catch (error) {
+      console.error('[report-pdf] Could not embed the logo; using the text wordmark.', error);
       options.logoDataUrl = null;
     }
   }
@@ -282,8 +288,9 @@ function renderReport(doc: jsPDF, report: Report, options: ReportPdfOptions) {
       doc.addImage(options.screenshotDataUrl, detectImageFormat(options.screenshotDataUrl), MARGIN_X, y, size.width, size.height, undefined, 'FAST');
       y += size.height + 3;
       paragraph(s('Desktop screenshot of the analyzed page, for visual reference only.', 'Captura de escritorio de la página analizada, solo como referencia visual.'), 8, 'normal', COLORS.muted);
-    } catch {
+    } catch (error) {
       // A broken screenshot should not block the rest of the report.
+      console.error('[report-pdf] Could not embed the screenshot; skipping it.', error);
     }
   }
 
@@ -632,6 +639,22 @@ function jpegDimensions(bytes: Uint8Array): { width: number; height: number } | 
   return null;
 }
 
+async function optionalAsset(name: string, load: () => Promise<string | null | undefined>): Promise<string | null> {
+  try {
+    const value = await load();
+    return typeof value === 'string' && value.startsWith('data:image/') ? value : null;
+  } catch (error) {
+    console.error(`[report-pdf] Could not prepare the ${name}; continuing without it.`, error);
+    return null;
+  }
+}
+
+async function prepareScreenshot(source: string | null | undefined): Promise<string | null> {
+  if (!source) return null;
+  if (source.startsWith('data:')) return source;
+  return rasterizeSource(source, 'image/jpeg', 0.72, 1400);
+}
+
 async function loadLogoDataUrl(): Promise<string | null> {
   return rasterizeSource('/icons/logo.svg', 'image/png', 1, 1600);
 }
@@ -654,7 +677,8 @@ async function rasterizeSource(src: string, type: 'image/png' | 'image/jpeg', qu
     }
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     return type === 'image/jpeg' ? canvas.toDataURL('image/jpeg', quality) : canvas.toDataURL('image/png');
-  } catch {
+  } catch (error) {
+    console.error(`[report-pdf] Could not rasterize ${src.startsWith('blob:') ? 'the screenshot' : src}.`, error);
     return null;
   }
 }

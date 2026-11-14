@@ -21,5 +21,12 @@ export default defineConfig({
   devToolbar: { enabled: false },
   output: 'server',
   adapter: vercel({ maxDuration: 60 }),
-  vite: { plugins: [tailwindcss()], ssr: { external: ['@sparticuz/chromium', 'puppeteer-core'] } },
+  vite: {
+    plugins: [tailwindcss()],
+    // jspdf is only reached through a dynamic import (the "Download report" button). Pre-bundle it
+    // at dev-server start so Vite does not re-optimize on the first click and answer the stale
+    // chunk with "504 Outdated Optimize Dep" (which made the PDF fail in the browser).
+    optimizeDeps: { include: ['jspdf'] },
+    ssr: { external: ['@sparticuz/chromium', 'puppeteer-core'] },
+  },
 });
