@@ -85,6 +85,7 @@ test('reports localize their interface but preserve the original page content',a
 });
 
 import { POST } from '../src/pages/api/analyze';
+import { isAllowedRequestOrigin } from '../src/lib/request-origin';
 function apiRequest(language?: string, preference?: string, header?: string) {
   return { request: new Request('https://can-ai-read.example/api/analyze',{ method:'POST', headers:{'Content-Type':'application/json', ...(header ? {'Accept-Language':header} : {})},body:JSON.stringify({url:'http://127.0.0.1',...(language?{language}:{})}) }), cookies:{get:()=>preference ? {value:preference} : undefined} } as unknown as Parameters<typeof POST>[0];
 }
@@ -103,4 +104,12 @@ test('API errors follow Spanish detection and explicit English override',async()
 test('saved Spanish preference overrides an English browser in API',async()=>{
   const response=await POST(apiRequest(undefined,'es','en-US'));
   assert.equal((await response.json()).error,'Solo podemos analizar sitios públicos de Internet.');
+});
+test('custom production domains are accepted behind a trusted forwarded host',()=>{
+ const request=new Request('https://can-ai-read.vercel.app/api/analyze',{headers:{Origin:'https://canaireadyou.com','x-forwarded-host':'canaireadyou.com'}});
+ assert.equal(isAllowedRequestOrigin(request),true);
+});
+test('an unrelated browser origin remains rejected behind the proxy',()=>{
+ const request=new Request('https://can-ai-read.vercel.app/api/analyze',{headers:{Origin:'https://attacker.example','x-forwarded-host':'canaireadyou.com'}});
+ assert.equal(isAllowedRequestOrigin(request),false);
 });

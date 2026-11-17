@@ -1,11 +1,11 @@
 import type { APIRoute } from 'astro';
 import { captureDesktopScreenshot } from '../../lib/screenshot';
+import { isAllowedRequestOrigin } from '../../lib/request-origin';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-  const origin = new URL(request.url).origin;
-  if (request.headers.get('origin') && request.headers.get('origin') !== origin) return new Response(null, { status: 403 });
+  if (!isAllowedRequestOrigin(request)) return new Response(null, { status: 403 });
   if (!request.headers.get('content-type')?.includes('application/json')) return new Response(null, { status: 415 });
   try {
     const raw = await request.text();

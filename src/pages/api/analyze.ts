@@ -1,12 +1,13 @@
 import type { APIRoute } from 'astro';
 import { analyze } from '../../lib/analyze';
 import { resolveLocale, translator } from '../../lib/i18n';
+import { isAllowedRequestOrigin } from '../../lib/request-origin';
 export const prerender = false;
 export const POST: APIRoute = async ({ request, cookies }) => {
   let locale = resolveLocale(request.headers.get('accept-language'), cookies.get('language')?.value);
   let t = translator(locale);
   const reply = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Language': locale } });
-  if (request.headers.get('origin') && request.headers.get('origin') !== new URL(request.url).origin) return reply({ error: t("Origen no permitido.") }, 403);
+  if (!isAllowedRequestOrigin(request)) return reply({ error: t("Origen no permitido.") }, 403);
   if (!request.headers.get('content-type')?.includes('application/json')) return reply({ error: t("Formato no admitido.") }, 415);
   try {
     const reader = request.body?.getReader();
